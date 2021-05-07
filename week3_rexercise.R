@@ -18,3 +18,84 @@ caro <- caro %>%
     nPlus1  = sqrt((E-lead(E,1))^2+(N-lead(N,1))^2), # distance to pos +1 mintues
     nPlus2  = sqrt((E-lead(E,2))^2+(N-lead(N,2))^2), # distance to pos +2 mintues
     nPlus3  = sqrt((E-lead(E,3))^2+(N-lead(N,3))^2)) # distance to pos +3 minute
+
+# calculating mean
+caro <- caro %>%
+  rowwise() %>%
+  mutate(
+    stepMean = mean(c(nMinus3, nMinus2, nMinus1,nPlus1,nPlus2, nPlus3))
+  ) %>%
+  ungroup()
+
+
+# Task 2
+
+summary(caro)
+
+ggplot(caro, aes(x= stepMean)) +
+  geom_histogram()
+
+ggplot(caro, aes(y=stepMean)) +
+  geom_boxplot()
+
+# summary data: min. 1.431, median 3.962, mean 5.951, max 62.368
+
+# Median as Threshold
+caromedian <- caro %>% 
+  ungroup() %>%
+  mutate(static = stepMean < median(stepMean, na.rm = TRUE))
+
+caromedian <- caromedian %>%
+  filter(!static)
+
+caromedian %>%
+  ggplot(aes(E, N))  +
+  geom_path() +
+  geom_point() +
+  coord_fixed() +
+  theme(legend.position = "bottom")
+
+# mean as threshold
+caromean <- caro %>% 
+  ungroup() %>%
+  mutate(static = stepMean < mean(stepMean, na.rm = TRUE))
+
+caromean <- caromean %>%
+  filter(!static)
+
+caromean %>%
+  ggplot(aes(E, N))  +
+  geom_path() +
+  geom_point() +
+  coord_fixed() +
+  theme(legend.position = "bottom")
+
+# Treshold is 8
+caro8 <- caro %>% 
+  ungroup() %>%
+  mutate(static = stepMean < 8)
+
+caro8 <- caro8 %>%
+  filter(!static)
+
+caro8 %>%
+  ggplot(aes(E, N))  +
+  geom_path() +
+  geom_point() +
+  coord_fixed() +
+  theme(legend.position = "bottom")
+
+# Treshold is 9
+caro9 <- caro %>% 
+  ungroup() %>%
+  mutate(static = stepMean < 9)
+
+caro9 <- caro9 %>%
+  filter(!static)
+
+caro9 %>%
+  ggplot(aes(E, N))  +
+  geom_path() +
+  geom_point() +
+  coord_fixed() +
+  theme(legend.position = "bottom")
