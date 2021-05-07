@@ -1,8 +1,6 @@
 library(readr)        # to import tabular data (e.g. csv)
 library(dplyr)        # to manipulate (tabular) data
 library(ggplot2)      # to visualize data
-library(sf)           # to handle spatial vector data
-library(terra)        # To handle raster data
 library(lubridate)    # To handle dates and times
 
 
@@ -149,5 +147,39 @@ Plot_segm_col_clean <- ggplot(data = caro9, aes(x= E, y= N)) +
   theme(panel.border = element_blank(),
         title = element_text(vjust = 2, size = 15),
         axis.title = element_text(vjust = 2, size = 15))
+
+# Task 5 - similarity measures
+
+pedestrian <- read_delim("pedestrian.csv",",")
+
+pedestrian$TrajID <- as.factor(pedestrian$TrajID)
+str(pedestrian)
+
+Plot_pede_facet <- ggplot(data = pedestrian, aes(x= E, y= N, colour= TrajID)) +
+  geom_path() +
+  geom_point() + 
+  coord_sf(datum = st_crs(2056)) +
+  facet_wrap(~TrajID, nrow = 2) +
+  theme_light() +
+  theme(panel.border = element_blank(),
+        title = element_text(vjust = 2, size = 15),
+        axis.title = element_text(vjust = 2, size = 15),
+        legend.position = "none")
+
+# Task 6 - Calculate similarity 
+
+library(SimilarityMeasures)
+
+help(package = "SimilarityMeasures")
+
+Traj1 <- pedestrian [1:47,]
+Traj2 <- pedestrian [48:95,]
+Traj3 <- pedestrian [96:141,]
+Traj4 <- pedestrian [142:190,]
+Traj5 <- pedestrian [191:242,]
+Traj6 <- pedestrian [243:289,]
+# DTW
+
+
 
 
