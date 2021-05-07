@@ -102,14 +102,14 @@ caro9 %>%
 
 # Task 3
 
-caro9_sf <- st_as_sf(caro9, coords = c("E", "N"), crs = 2056, remove = FALSE)
-
-Plot_segm <- ggplot(data = caro9, aes(x= E, y= N, colour = static)) +
-  geom_point() + 
+Plot_segm <- ggplot(data = caro9, aes(x= E, y= N)) +
   geom_path() +
+  geom_point(aes(colour=static)) + 
   coord_sf(datum = st_crs(2056)) +
   theme_light() +
   labs(color = "Segments")+
   theme(panel.border = element_blank(),
         title = element_text(vjust=2, size=15),
         axis.title = element_text(vjust = 2, size = 15))
+
+
