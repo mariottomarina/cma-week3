@@ -90,7 +90,7 @@ caro9 <- caro %>%
   ungroup() %>%
   mutate(static = stepMean < 9)
 
-caro9 <- caro9 %>%
+caro9_filt <- caro9 %>%
   filter(!static)
 
 caro9 %>%
@@ -110,6 +110,44 @@ Plot_segm <- ggplot(data = caro9, aes(x= E, y= N)) +
   labs(color = "Segments")+
   theme(panel.border = element_blank(),
         title = element_text(vjust=2, size=15),
+        axis.title = element_text(vjust = 2, size = 15))
+
+# Task 4
+
+rle_id <- function(vec){
+  x <- rle(vec)$lengths
+  as.factor(rep(seq_along(x), times=x))
+}
+
+caro9 <- caro9 %>%
+  mutate(segment_id = rle_id(static))
+
+caro9 <- caro9 %>%
+  filter(!static)
+
+Plot_segm_col_unclean <- ggplot(data = caro9, aes(x= E, y= N)) +
+  geom_path() +
+  geom_point(aes(colour=segment_id)) + 
+  coord_sf(datum = st_crs(2056)) +
+  theme_light() +
+  labs(color = "Segments", titel = "All segments (uncleaned)") +
+  theme(panel.border = element_blank(),
+        title = element_text(vjust = 2, size = 15),
+        axis.title = element_text(vjust = 2, size = 15))
+
+caro9 <- caro9 %>%
+  group_by(segment_id)  %>%
+  mutate(n = length(TierID)) %>%
+  filter(n >= 5)
+
+Plot_segm_col_clean <- ggplot(data = caro9, aes(x= E, y= N)) +
+  geom_path() +
+  geom_point(aes(colour=segment_id)) + 
+  coord_sf(datum = st_crs(2056)) +
+  theme_light() +
+  labs(color = "Segments", title = "Long segments (removed segments <5)") +
+  theme(panel.border = element_blank(),
+        title = element_text(vjust = 2, size = 15),
         axis.title = element_text(vjust = 2, size = 15))
 
 
