@@ -91,7 +91,7 @@ caro9 <- caro %>%
 caro9_filt <- caro9 %>%
   filter(!static)
 
-caro9 %>%
+caro9_filt %>%
   ggplot(aes(E, N))  +
   geom_path() +
   geom_point() +
@@ -103,7 +103,6 @@ caro9 %>%
 Plot_segm <- ggplot(data = caro9, aes(x= E, y= N)) +
   geom_path() +
   geom_point(aes(colour=static)) + 
-  coord_sf(datum = st_crs(2056)) +
   theme_light() +
   labs(color = "Segments")+
   theme(panel.border = element_blank(),
@@ -125,8 +124,7 @@ caro9 <- caro9 %>%
 
 Plot_segm_col_unclean <- ggplot(data = caro9, aes(x= E, y= N)) +
   geom_path() +
-  geom_point(aes(colour=segment_id)) + 
-  coord_sf(datum = st_crs(2056)) +
+  geom_point(aes(colour=segment_id)) +
   theme_light() +
   labs(color = "Segments", titel = "All segments (uncleaned)") +
   theme(panel.border = element_blank(),
@@ -140,8 +138,7 @@ caro9 <- caro9 %>%
 
 Plot_segm_col_clean <- ggplot(data = caro9, aes(x= E, y= N)) +
   geom_path() +
-  geom_point(aes(colour=segment_id)) + 
-  coord_sf(datum = st_crs(2056)) +
+  geom_point(aes(colour=segment_id)) +
   theme_light() +
   labs(color = "Segments", title = "Long segments (removed segments <5)") +
   theme(panel.border = element_blank(),
@@ -158,7 +155,6 @@ str(pedestrian)
 Plot_pede_facet <- ggplot(data = pedestrian, aes(x= E, y= N, colour= TrajID)) +
   geom_path() +
   geom_point() + 
-  coord_sf(datum = st_crs(2056)) +
   facet_wrap(~TrajID, nrow = 2) +
   theme_light() +
   theme(panel.border = element_blank(),
@@ -170,16 +166,15 @@ Plot_pede_facet <- ggplot(data = pedestrian, aes(x= E, y= N, colour= TrajID)) +
 
 library(SimilarityMeasures)
 
-help(package = "SimilarityMeasures")
+Traj1 <- as.matrix(pedestrian [1:47,])
+Traj2 <- as.matrix(pedestrian [48:95,])
+Traj3 <- as.matrix(pedestrian [96:141,])
+Traj4 <- as.matrix(pedestrian [142:190,])
+Traj5 <- as.matrix(pedestrian [191:242,])
+Traj6 <- as.matrix(pedestrian [243:289,])
 
-Traj1 <- pedestrian [1:47,]
-Traj2 <- pedestrian [48:95,]
-Traj3 <- pedestrian [96:141,]
-Traj4 <- pedestrian [142:190,]
-Traj5 <- pedestrian [191:242,]
-Traj6 <- pedestrian [243:289,]
 # DTW
 
-
+DTW(Traj1, Traj2, 3)
 
 
