@@ -166,15 +166,99 @@ Plot_pede_facet <- ggplot(data = pedestrian, aes(x= E, y= N, colour= TrajID)) +
 
 library(SimilarityMeasures)
 
-Traj1 <- as.matrix(pedestrian [1:47,])
-Traj2 <- as.matrix(pedestrian [48:95,])
-Traj3 <- as.matrix(pedestrian [96:141,])
-Traj4 <- as.matrix(pedestrian [142:190,])
-Traj5 <- as.matrix(pedestrian [191:242,])
-Traj6 <- as.matrix(pedestrian [243:289,])
+pedestrian <- select(pedestrian, TrajID, N, E)
+
+Traj1 <- pedestrian  [1:47,]
+Traj2 <- pedestrian  [48:95,]
+Traj3 <- pedestrian  [96:141,]
+Traj4 <- pedestrian  [142:190,]
+Traj5 <- pedestrian  [191:242,]
+Traj6 <- pedestrian  [143:289,]
+
+Traj1 <- select(Traj1, E,N)
+Traj2 <- select(Traj2, E,N)
+Traj3 <- select(Traj3, E,N)
+Traj4 <- select(Traj4, E,N)
+Traj5 <- select(Traj5, E,N)
+Traj6 <- select(Traj6, E,N)
+
+Traj1 <- as.matrix(Traj1)
+Traj2 <- as.matrix(Traj2)
+Traj3 <- as.matrix(Traj3)
+Traj4 <- as.matrix(Traj4)
+Traj5 <- as.matrix(Traj5)
+Traj6 <- as.matrix(Traj6)
 
 # DTW
+dtw2 <- DTW(Traj1, Traj2, -1)
+dtw3 <- DTW(Traj1, Traj3, -1)
+dtw4 <- DTW(Traj1, Traj4, -1)
+dtw5 <- DTW(Traj1, Traj5, -1)
+dtw6 <- DTW(Traj1, Traj6, -1)
 
-DTW(Traj1, Traj2, 3)
 
+# Edit dist
+?EditDist
 
+edt2 <- EditDist(Traj1, Traj2, 10)
+edt3 <- EditDist(Traj1, Traj3, 10)
+edt4 <- EditDist(Traj1, Traj4, 10)
+edt5 <- EditDist(Traj1, Traj5, 10)
+edt6 <- EditDist(Traj1, Traj6, 10)
+
+# Frechet 
+?Frechet
+fre2 <- Frechet(Traj1, Traj2)
+fre3 <- Frechet(Traj1, Traj3)
+fre4 <- Frechet(Traj1, Traj4)
+fre5 <- Frechet(Traj1, Traj5)
+fre6 <- Frechet(Traj1, Traj6)
+
+# LCSS
+?LCSS
+lcss2 <- LCSS(Traj1, Traj2, 10,5,0.5)
+lcss3 <- LCSS(Traj1, Traj3, 10,5,0.5)
+lcss4 <- LCSS(Traj1, Traj4, 10,5,0.5)
+lcss5 <- LCSS(Traj1, Traj5, 10,5,0.5)
+lcss6 <- LCSS(Traj1, Traj6, 10,5,0.5)
+
+dtw <- c(NA, dtw2, dtw3, dtw4, dtw5, dtw6)
+edt <- c(NA, edt2, edt3, edt4, edt5, edt6)
+fre <- c(NA, fre2, fre3, fre4, fre5, fre6)
+lcss <- c(NA, lcss2, lcss3, lcss4, lcss5, lcss6)
+
+res.sim.mea <- data.frame(dtw, edt, fre, lcss)
+View(res.sim.mea)
+
+res.sim.mea$traj <- c(1,2,3,4,5,6)
+
+# Plots
+
+plot_dtw <- ggplot(res.sim.mea, aes(x=traj, y=dtw, fill = traj)) +
+  geom_bar(stat = "identity") +
+  theme_light()+
+  theme(legend.position = "none") +
+  labs(title = "Distance Time Warping")
+
+plot_edt <- ggplot(res.sim.mea, aes(x=traj, y=edt, fill = traj)) +
+  geom_bar(stat = "identity") +
+  theme_light()+
+  theme(legend.position = "none") +
+  labs(title = "Edit Distance")
+
+plot_fre <- ggplot(res.sim.mea, aes(x=traj, y=fre, fill = traj)) +
+  geom_bar(stat = "identity") +
+  theme_light()+
+  theme(legend.position = "none") +
+  labs(title = "Frechet Calculation")
+
+plot_lcss <- ggplot(res.sim.mea, aes(x=traj, y=lcss, fill = traj)) +
+  geom_bar(stat = "identity") +
+  theme_light()+
+  theme(legend.position = "none") +
+  labs(title = "Longest Common subsequence")
+
+library(cowplot)
+grid <- plot_grid(plot_dtw, plot_edt, plot_fre, plot_lcss)
+
+grid + plot_annotation(title = "Computed similarities using differnet measures /n between trajectory 1 to all other trajectories")
